@@ -1,0 +1,43 @@
+stateDiagram-v2
+    [*] --> IDLE
+    
+    IDLE --> AWAITING_INTENT : Usuario dice Hola
+    
+    state AWAITING_INTENT {
+        [*] --> EsperandoOpcion
+    }
+    
+    AWAITING_INTENT --> ASKING_GEO_NAME : Buscar ID
+    AWAITING_INTENT --> ASKING_KEYWORD : Contar Negocios
+
+    ASKING_GEO_NAME --> FETCHING_API : Ingresa Nombre Ciudads
+
+    ASKING_KEYWORD --> ASKING_LOCATION : Ingresa Tipo Servicio
+    ASKING_LOCATION --> FETCHING_API : Ingresa Ubicacion
+
+    state FETCHING_API {
+        [*] --> CallingINEGI
+        CallingINEGI --> ValidatingToken
+    }
+
+    FETCHING_API --> ERROR_HANDLING : Error
+    FETCHING_API --> PROCESSING_DATA : Exito (200 OK)
+
+    state PROCESSING_DATA {
+        [*] --> CheckType
+        CheckType --> ExtractID : Es Busqueda ID
+        CheckType --> CountTotal : Es Conteo
+        CountTotal --> Summarize : Sumar resultados
+    }
+
+    PROCESSING_DATA --> SHOWING_RESULTS : Datos listos
+    
+    state SHOWING_RESULTS {
+        [*] --> RenderText
+        RenderText --> AskNextStep
+    }
+
+    SHOWING_RESULTS --> AWAITING_INTENT : Otra consulta
+    SHOWING_RESULTS --> IDLE : Fin
+
+    ERROR_HANDLING --> AWAITING_INTENT : Reintentar

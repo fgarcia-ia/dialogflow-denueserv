@@ -1,0 +1,7 @@
+functions-framework==3.*
+PyYAML
+Flask
+requests
+gunicorn
+pandas
+numpy
